@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { GitHubButton } from "./GitHubButton";
 
 interface EmailLoginFormProps {
   onSubmit: (email: string) => void;
@@ -68,6 +69,13 @@ export const EmailLoginForm = ({
             {isLoading ? "Loading..." : "Continue"}
           </Button>
         </div>
+        <div className="flex items-center gap-2 py-2">
+          <div className="flex-1 h-px bg-gray-300" />
+          <span className="text-sm text-gray-400">or</span>
+          <div className="flex-1 h-px bg-gray-300" />
+        </div>
+
+        <GitHubButton />
 
         <div className="pt-4 text-center">
           <div className="text-sm text-gray-600 mb-1">Privacy Policy</div>

@@ -1,10 +1,13 @@
 import { AuthService } from '@/services/auth.service';
-import { ErrorCodes, sendError, sendSuccess } from '@/utils/response';
+import { AppError, ErrorCodes, sendError, sendSuccess } from '@/utils/response';
 import { Request, Response } from 'express';
 
 export const signup = async (req: Request, res: Response) => {
   try {
-    const { email, verificationCode } = req.body;
+    const { email, verificationCode } = req.body as {
+      email?: string;
+      verificationCode?: string;
+    };
 
     if (!email) {
       return sendError(res, 'Email is required', 400, ErrorCodes.INVALID_INPUT);
@@ -24,16 +27,25 @@ export const signup = async (req: Request, res: Response) => {
 
     const result = await AuthService.signup(email, verificationCode);
     return sendSuccess(res, result, 'User created', 201);
-  } catch (error: any) {
-    const statusCode = error.statusCode || 500;
-    const errorCode = error.code || ErrorCodes.SERVER_ERROR;
-    return sendError(res, error.message, statusCode, errorCode);
+  } catch (error: unknown) {
+    if (error instanceof AppError) {
+      return sendError(res, error.message, error.statusCode, error.code);
+    }
+    return sendError(
+      res,
+      'Internal server error',
+      500,
+      ErrorCodes.SERVER_ERROR,
+    );
   }
 };
 
 export const signin = async (req: Request, res: Response) => {
   try {
-    const { email, verificationCode } = req.body;
+    const { email, verificationCode } = req.body as {
+      email?: string;
+      verificationCode?: string;
+    };
 
     if (!email) {
       return sendError(res, 'Email is required', 400, ErrorCodes.INVALID_INPUT);
@@ -56,9 +68,15 @@ export const signin = async (req: Request, res: Response) => {
 
     const result = await AuthService.signin(email, verificationCode);
     return sendSuccess(res, result, 'Login successful');
-  } catch (error: any) {
-    const statusCode = error.statusCode || 500;
-    const errorCode = error.code || ErrorCodes.SERVER_ERROR;
-    return sendError(res, error.message, statusCode, errorCode);
+  } catch (error: unknown) {
+    if (error instanceof AppError) {
+      return sendError(res, error.message, error.statusCode, error.code);
+    }
+    return sendError(
+      res,
+      'Internal server error',
+      500,
+      ErrorCodes.SERVER_ERROR,
+    );
   }
 };

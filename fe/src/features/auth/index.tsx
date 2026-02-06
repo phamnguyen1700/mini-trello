@@ -9,11 +9,15 @@ import {
   useVerifySignin,
 } from "@/hooks/auth";
 import { SendCodeResponse } from "../../../../shared/types/user.types";
+import { useSearchParams } from "next/navigation";
+import { toast } from "react-hot-toast/headless";
 
 export const AuthFeature = () => {
   const [step, setStep] = useState<"email" | "verify">("email");
   const [email, setEmail] = useState("");
   const [isExistingUser, setIsExistingUser] = useState<boolean | null>(null);
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
 
   const { mutate: sendSignupCode, isPending: isSendingCode } =
     useSendSignupCode();
@@ -41,7 +45,7 @@ export const AuthFeature = () => {
       },
     );
   };
-  debugger;
+
   const handleVerifySubmit = (code: string) => {
     if (isExistingUser) {
       verifySignin(
@@ -69,6 +73,12 @@ export const AuthFeature = () => {
       );
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      toast.error("GitHub login failed. Please try again.");
+    }
+  }, [error]);
 
   useEffect(() => {
     if (isSignupSuccess) {

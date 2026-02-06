@@ -3,6 +3,7 @@ import { authService } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth";
 import { toast } from "react-hot-toast";
+import { githubService } from "@/services/auth/github";
 
 export const useSendSignupCode = () => {
   return useMutation({
@@ -10,7 +11,7 @@ export const useSendSignupCode = () => {
     onSuccess: () => {
       toast.success("Verification code sent to your email!");
     },
-   onError: (error) => {
+    onError: (error) => {
       toast.error(
         error instanceof Error
           ? error.message
@@ -32,7 +33,9 @@ export const useVerifySignup = () => {
       }, 5000);
     },
     onError: (error) => {
+      toast.error(
         error instanceof Error ? error.message : "Invalid verification code",
+      );
     },
   });
 };
@@ -70,4 +73,35 @@ export const useVerifySignin = () => {
       );
     },
   });
+};
+
+export const useGitHubCallback = () => {
+  const { setAuth } = useAuthStore();
+  const router = useRouter();
+
+  const handleCallback = async (code: string | null, error: string | null) => {
+    if (error) {
+      toast.error("GitHub login failed.");
+      router.push("/auth");
+      return;
+    }
+
+    if (!code) {
+      toast.error("Missing code.");
+      router.push("/auth");
+      return;
+    }
+
+    try {
+      const res = await githubService.exchangeCode(code);
+      setAuth(res.data.accessToken, res.data.user);
+      toast.success("Login successful!");
+      router.push("/dashboard");
+    } catch {
+      toast.error("GitHub login failed");
+      router.push("/auth");
+    }
+  };
+
+  return { handleCallback };
 };
