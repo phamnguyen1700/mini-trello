@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from 'express';
 
 import authRoutes from './routes/auth.route';
+import boardRoutes from './routes/board.route';
 import userRoutes from './routes/user.route';
 
 dotenv.config();
@@ -24,7 +25,7 @@ app.get('/', (_req: Request, res: Response) => {
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
-// app.use('/boards', boardRoutes);
+app.use('/boards', boardRoutes);
 
 app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: 'Route not found' });
