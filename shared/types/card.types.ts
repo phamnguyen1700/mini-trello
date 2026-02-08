@@ -24,6 +24,6 @@ export interface UpdateCardDto {
 }
 
 export interface MoveCardDto {
-  status: CardStatus;
-  position: number;
+  status?: CardStatus;
+  index: number;
 }

@@ -24,7 +24,7 @@ export const DashboardFeature = () => {
   };
 
   if (isLoading) {
-    return <p className="text-gray-400">Loading boards...</p>;
+    return <p className="text-muted">Loading boards...</p>;
   }
 
   return (

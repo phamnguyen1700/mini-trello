@@ -4,10 +4,9 @@ import {
   Card,
   CardStatus,
   CreateCardDto,
-  MoveCardDto,
   UpdateCardDto,
 } from '@shared/types';
-import { Timestamp } from 'firebase-admin/firestore';
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 
 const COLLECTION = 'cards';
 
@@ -19,20 +18,33 @@ export const CardRepo = {
   ): Promise<Card> {
     const now = Timestamp.now();
 
+    const existingCards = await db
+      .collection(COLLECTION)
+      .where('boardId', '==', boardId)
+      .where('status', '==', 'backlog')
+      .get();
+
+    const maxPosition = existingCards.empty
+      ? 0
+      : existingCards.docs.reduce((max, doc) => {
+          const position = (doc.data() as ICardDocument).position;
+          return Math.max(max, position);
+        }, 0);
+
     const data: ICardDocument = {
       boardId,
       name: dto.name,
-      description: dto.description,
-
       status: 'backlog',
-      position: 0,
-
+      position: maxPosition + 1,
       memberIds: [creatorId],
       tasksCount: 0,
-
       createdAt: now,
       updatedAt: now,
     };
+
+    if (dto.description !== undefined) {
+      data.description = dto.description;
+    }
 
     const ref = await db.collection(COLLECTION).add(data);
     return mapCardFromDoc(ref.id, data);
@@ -42,7 +54,6 @@ export const CardRepo = {
     const snap = await db
       .collection(COLLECTION)
       .where('boardId', '==', boardId)
-      .orderBy('position')
       .get();
 
     return snap.docs.map((doc) =>
@@ -85,13 +96,15 @@ export const CardRepo = {
 
   async move(
     cardId: string,
-    dto: { status: CardStatus; position: number },
+    dto: { status?: CardStatus; position: number },
   ): Promise<Card> {
-    await db.collection(COLLECTION).doc(cardId).update({
-      status: dto.status,
+    const updateData: Partial<ICardDocument> & { updatedAt: Timestamp } = {
       position: dto.position,
       updatedAt: Timestamp.now(),
-    });
+    };
+    if (dto.status !== undefined) updateData.status = dto.status;
+
+    await db.collection(COLLECTION).doc(cardId).update(updateData);
 
     const doc = await db.collection(COLLECTION).doc(cardId).get();
     return mapCardFromDoc(doc.id, doc.data() as ICardDocument);
@@ -99,5 +112,19 @@ export const CardRepo = {
 
   async delete(cardId: string): Promise<void> {
     await db.collection(COLLECTION).doc(cardId).delete();
+  },
+
+  async adjustTasksCount(cardId: string, delta: number): Promise<void> {
+    await db
+      .collection(COLLECTION)
+      .doc(cardId)
+      .update({ tasksCount: FieldValue.increment(delta) });
+  },
+
+  async addMember(cardId: string, memberId: string): Promise<void> {
+    await db
+      .collection(COLLECTION)
+      .doc(cardId)
+      .update({ memberIds: FieldValue.arrayUnion(memberId) });
   },
 };

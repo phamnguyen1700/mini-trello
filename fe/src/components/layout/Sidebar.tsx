@@ -158,7 +158,7 @@ export const Sidebar = ({ collapsed }: SidebarProps) => {
           </Collapsible>
 
           <div className="sidebar-close-section">
-            <p className="text-xs text-slate-400 mb-3">
+            <p className="text-xs text-muted mb-3">
               You can&apos;t find and reopen closed boards if close the board
             </p>
             <Button variant="destructive" className="w-full">

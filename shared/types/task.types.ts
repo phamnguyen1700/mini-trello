@@ -34,3 +34,8 @@ export interface UpdateTaskDto {
 export interface AssignTaskDto {
   userId: string;
 }
+
+export interface MoveTaskDto {
+  toCardId: string;
+  index: number;
+}

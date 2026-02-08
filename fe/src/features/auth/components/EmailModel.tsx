@@ -71,15 +71,15 @@ export const EmailLoginForm = ({
         </div>
         <div className="flex items-center gap-2 py-2">
           <div className="flex-1 h-px bg-gray-300" />
-          <span className="text-sm text-gray-400">or</span>
+          <span className="text-sm text-faint">or</span>
           <div className="flex-1 h-px bg-gray-300" />
         </div>
 
         <GitHubButton />
 
         <div className="pt-4 text-center">
-          <div className="text-sm text-gray-600 mb-1">Privacy Policy</div>
-          <div className="text-xs text-gray-500">
+          <div className="text-sm text-soft mb-1">Privacy Policy</div>
+          <div className="text-xs text-subtle">
             <span>
               This site is protected by reCAPTCHA and the Google
               <a
