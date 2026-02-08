@@ -1,25 +1,25 @@
-export type CardStatus = 'icebox' | 'backlog' | 'ongoing' | 'review' | 'done';
+export type CardStatus = "icebox" | "backlog" | "ongoing" | "review" | "done";
 
 export interface Card {
   id: string;
   boardId: string;
-  title: string;
+  name: string;
   description?: string;
   status: CardStatus;
   position: number;
-  createdBy: string;
+  tasks_count: number;
+  list_member: string[];
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt?: Date;
 }
 
 export interface CreateCardDto {
-  title: string;
+  name: string;
   description?: string;
-  status: CardStatus;
 }
 
 export interface UpdateCardDto {
-  title?: string;
+  name?: string;
   description?: string;
 }
 
