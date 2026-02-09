@@ -3,15 +3,16 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "tsx watch src/main.ts",
-    "build": "tsc",
-    "start": "node dist/main.js",
+    "build": "tsc -p tsconfig.prod.json",
+    "start": "node -r module-alias/register dist/be/src/main.js",
     "lint": "eslint . --ext .ts"
   },
   "engines": {
     "node": ">=16.0.0"
   },
   "_moduleAliases": {
-    "@src": "dist"
+    "@": "dist/be/src",
+    "@shared": "dist/shared"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

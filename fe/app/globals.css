@@ -232,7 +232,7 @@ body {
 
   .main-content {
     margin-top: 48px;
-    margin-left: 220px;
+    margin-left: 240px;
     padding: 24px;
     min-height: calc(100vh - 48px);
     background: #475569;
@@ -348,7 +348,32 @@ body {
     padding: 24px;
     overflow-x: auto;
     align-items: flex-start;
-    height: calc(100vh - 48px - 48px);
+    min-height: calc(100vh - 48px - 48px);
+    height: auto;
+  }
+
+  .board-column-wrapper {
+    display: inline-flex;
+    flex-direction: column;
+    align-self: flex-start;
+    height: fit-content;
+    flex: 0 0 auto;
+  }
+
+  .board-column-drag-handle {
+    height: 14px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    cursor: grab;
+  }
+
+  .task-drag-handle {
+    height: 8px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    cursor: grab;
   }
 
   .board-column {
@@ -358,8 +383,10 @@ body {
     border-radius: 4px;
     padding: 12px;
     flex-shrink: 0;
-    max-height: calc(100vh - 48px - 48px - 48px);
-    overflow-y: auto;
+    display: inline-flex;
+    flex-direction: column;
+    align-self: flex-start;
+    height: auto;
   }
 
   .board-column-header {
@@ -371,6 +398,17 @@ body {
     color: #e2e8f0;
   }
 
+  .card-actions {
+    opacity: 0;
+    display: flex;
+    gap: 6px;
+    transition: opacity 0.15s ease;
+  }
+
+  .board-column:hover .card-actions {
+    opacity: 1;
+  }
+
   .board-card-item {
     background: #111;
     border-radius: 8px;
@@ -378,6 +416,15 @@ body {
     margin-bottom: 8px;
     color: #e2e8f0;
     cursor: pointer;
+  }
+
+  .task-actions {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .board-column:hover .task-actions {
+    opacity: 1;
   }
 
   .board-card-item:hover {

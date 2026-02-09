@@ -75,9 +75,13 @@ export const useCard = (boardId: string, cardId: string) => {
 };
 
 export const useUpdateCard = (boardId: string) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateCardDto }) =>
       cardService.update({ boardId, id, data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cards", boardId] });
+    },
     onError: (error) => {
       toast.error(
         error instanceof Error ? error.message : "Failed to update card",
@@ -134,6 +138,7 @@ export const useTask = (boardId: string, cardId: string, taskId: string) => {
 };
 
 export const useUpdateTask = (boardId: string, cardId: string) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({
       taskId,
@@ -142,6 +147,9 @@ export const useUpdateTask = (boardId: string, cardId: string) => {
       taskId: string;
       data: UpdateTaskDto;
     }) => taskService.update({ boardId, cardId, taskId, data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", boardId, cardId] });
+    },
     onError: (error) => {
       toast.error(
         error instanceof Error ? error.message : "Failed to update task",

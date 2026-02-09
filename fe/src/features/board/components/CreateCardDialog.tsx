@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,11 @@ interface CreateCardDialogProps {
   open: boolean;
   onClose: () => void;
   onCreate: (name: string, description: string) => void;
+  initialValues?: {
+    name?: string;
+    description?: string;
+  };
+  titleText?: string;
   isCreating?: boolean;
 }
 
@@ -22,10 +27,14 @@ export const CreateCardDialog = ({
   open,
   onClose,
   onCreate,
+  initialValues,
+  titleText = "Create a new card",
   isCreating,
 }: CreateCardDialogProps) => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState(initialValues?.name ?? "");
+  const [description, setDescription] = useState(
+    initialValues?.description ?? "",
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,11 +44,17 @@ export const CreateCardDialog = ({
     setDescription("");
   };
 
+  useEffect(() => {
+    if (!open) return;
+    setName(initialValues?.name ?? "");
+    setDescription(initialValues?.description ?? "");
+  }, [open, initialValues]);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new card</DialogTitle>
+          <DialogTitle>{titleText}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input

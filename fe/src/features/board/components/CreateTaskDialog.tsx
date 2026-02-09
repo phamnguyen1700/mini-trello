@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -19,6 +19,12 @@ interface CreateTaskDialogProps {
     description?: string;
     priority: "low" | "medium" | "high";
   }) => void;
+  initialValues?: {
+    title?: string;
+    description?: string;
+    priority?: "low" | "medium" | "high";
+  };
+  titleText?: string;
   isCreating?: boolean;
 }
 
@@ -26,11 +32,17 @@ export const CreateTaskDialog = ({
   open,
   onClose,
   onCreate,
+  initialValues,
+  titleText = "Create a new task",
   isCreating,
 }: CreateTaskDialogProps) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
+  const [title, setTitle] = useState(initialValues?.title ?? "");
+  const [description, setDescription] = useState(
+    initialValues?.description ?? "",
+  );
+  const [priority, setPriority] = useState<"low" | "medium" | "high">(
+    initialValues?.priority ?? "medium",
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,11 +57,18 @@ export const CreateTaskDialog = ({
     setPriority("medium");
   };
 
+  useEffect(() => {
+    if (!open) return;
+    setTitle(initialValues?.title ?? "");
+    setDescription(initialValues?.description ?? "");
+    setPriority(initialValues?.priority ?? "medium");
+  }, [open, initialValues]);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent data-no-dnd onPointerDown={(event) => event.stopPropagation()}>
         <DialogHeader>
-          <DialogTitle>Create a new task</DialogTitle>
+          <DialogTitle>{titleText}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input

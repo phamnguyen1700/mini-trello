@@ -9,7 +9,6 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { Card } from "../../../../shared/types/card.types";
 import { Board } from "../../../../shared/types/board.types";
 import { User } from "../../../../shared/types/user.types";
 import {
@@ -17,87 +16,37 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
+import { useBoards } from "@/hooks/dashboard";
 
 export const mockMembers: User[] = [
   {
     id: "1",
     email: "user1@test.com",
-    displayName: "User 1",
+    displayName: "Mock User 1",
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
     id: "2",
     email: "user2@test.com",
-    displayName: "User 2",
+    displayName: "Mock User 2",
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
     id: "3",
     email: "user3@test.com",
-    displayName: "User 3",
+    displayName: "Mock User 3",
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
     id: "4",
     email: "user4@test.com",
-    displayName: "User 4",
+    displayName: "Mock User 4",
     createdAt: new Date(),
     updatedAt: new Date(),
   },
-];
-
-export const mockCards: Card[] = [
-  {
-    id: "1",
-    boardId: "board-1",
-    name: "Project planning",
-    tasks_count: 3,
-    list_member: ["1", "2"],
-    createdAt: new Date(),
-  },
-  {
-    id: "2",
-    boardId: "board-1",
-    name: "Kickoff meeting",
-    tasks_count: 1,
-    list_member: ["1"],
-    createdAt: new Date(),
-  },
-  {
-    id: "3",
-    boardId: "board-1",
-    name: "Kickoff meeting",
-    description: "Review outcomes",
-    tasks_count: 2,
-    list_member: ["2", "3"],
-    createdAt: new Date(),
-  },
-];
-
-export const mockBoard: Board = {
-  id: "board-1",
-  name: "My Trello board",
-  ownerId: "1",
-  memberIds: ["1", "2", "3", "4"],
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-export type ColumnId = "todo" | "doing" | "done";
-
-export interface Column {
-  id: ColumnId;
-  title: string;
-  cardIds: string[];
-}
-
-export const mockColumns: Column[] = [
-  { id: "todo", title: "To do", cardIds: ["1", "2"] },
-  { id: "doing", title: "Doing", cardIds: [] },
-  { id: "done", title: "Done", cardIds: ["3"] },
 ];
 
 interface SidebarProps {
@@ -107,6 +56,8 @@ interface SidebarProps {
 export const Sidebar = ({ collapsed }: SidebarProps) => {
   const pathname = usePathname();
   const router = useRouter();
+  const { data: boardsData } = useBoards();
+  const boards = boardsData?.data ?? [];
 
   const isBoardDetail = pathname.startsWith("/boards/");
 
@@ -127,13 +78,26 @@ export const Sidebar = ({ collapsed }: SidebarProps) => {
           </div>
 
           <Collapsible defaultOpen>
-            <CollapsibleTrigger className="sidebar-board-item active w-full">
+            <CollapsibleTrigger className="sidebar-board-item w-full">
               <div className="w-3 h-3 rounded-sm bg-red-500" />
-              <span className="text-sm flex-1 text-left">{mockBoard.name}</span>
+              <span className="text-sm flex-1 text-left">Boards</span>
               <ChevronDown className="w-3 h-3 transition-transform duration-200 [[data-state=closed]>&]:-rotate-90" />
             </CollapsibleTrigger>
 
             <CollapsibleContent>
+              {boards.map((board: Board) => {
+                const isActive = pathname === `/boards/${board.id}`;
+                return (
+                  <div
+                    key={board.id}
+                    className={`sidebar-board-item ${isActive ? "active" : ""}`}
+                    onClick={() => router.push(`/boards/${board.id}`)}
+                  >
+                    <div className="w-3 h-3 rounded-sm bg-red-500" />
+                    <span className="text-sm flex-1 text-left">{board.name}</span>
+                  </div>
+                );
+              })}
               <Collapsible defaultOpen>
                 <CollapsibleTrigger className="sidebar-members-label w-full">
                   <Users className="w-4 h-4" />
