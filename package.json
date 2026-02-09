@@ -1,0 +1,14 @@
+{
+  "name": "mini-trello",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix be && npm install --prefix fe",
+    "build:all": "npm --prefix be run build && npm --prefix fe run build",
+    "start:all": "concurrently -n \"be,fe\" -c \"cyan,green\" \"npm --prefix be run start\" \"npm --prefix fe run start\"",
+    "dev:all": "concurrently -n \"be,fe\" -c \"cyan,green\" \"npm --prefix be run dev\" \"npm --prefix fe run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
+
