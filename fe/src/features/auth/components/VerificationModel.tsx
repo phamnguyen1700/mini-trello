@@ -35,7 +35,7 @@ export const VerificationModel = ({
         <h1 className="text-center text-4xl font-bold mb-2">
           Email Verification
         </h1>
-        <div className="text-center text-lg text-gray-600 mb-2">
+        <div className="text-center text-lg text-soft mb-2">
           Please enter your code that send to your email address
         </div>
         <Input
@@ -65,8 +65,8 @@ export const VerificationModel = ({
           </Button>
         </div>
         <div className="pt-4 text-center">
-          <div className="text-sm text-gray-600 mb-1">Privacy Policy</div>
-          <div className="text-xs text-gray-500">
+          <div className="text-sm text-soft mb-1">Privacy Policy</div>
+          <div className="text-xs text-subtle">
             <span>
               This site is protected by reCAPTCHA and the Google
               <a

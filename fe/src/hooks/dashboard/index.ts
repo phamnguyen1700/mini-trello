@@ -9,6 +9,14 @@ export const useBoards = () => {
   });
 };
 
+export const useBoard = (id: string) => {
+  return useQuery({
+    queryKey: ["board", id],
+    queryFn: () => boardService.getById(id),
+    enabled: !!id,
+  });
+};
+
 export const useCreateBoard = () => {
   const queryClient = useQueryClient();
 

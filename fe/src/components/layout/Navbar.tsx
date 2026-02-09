@@ -33,7 +33,7 @@ export const Navbar = ({ sidebarCollapsed, onToggleSidebar }: NavbarProps) => {
       <div className="navbar-actions">
         <button
           onClick={onToggleSidebar}
-          className="text-gray-300 hover:text-white"
+          className="text-gray-300-hover"
         >
           {sidebarCollapsed ? (
             <PanelLeft className="w-5 h-5" />
@@ -52,7 +52,7 @@ export const Navbar = ({ sidebarCollapsed, onToggleSidebar }: NavbarProps) => {
       </div>
 
       <div className="navbar-actions">
-        <button className="text-gray-300 hover:text-white">
+        <button className="text-gray-300-hover">
           <Bell className="w-5 h-5" />
         </button>
 
